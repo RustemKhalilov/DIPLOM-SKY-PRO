@@ -2,7 +2,7 @@
 FROM python:3.12
 
 # Устанавливаем рабочую директорию в контейнере
-WORKDIR /habits
+WORKDIR /tasktracker
 
 # Копируем зависимости в контейнер
 COPY ./requirements.txt .

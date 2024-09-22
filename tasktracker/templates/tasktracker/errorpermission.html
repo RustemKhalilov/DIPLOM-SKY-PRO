@@ -1,0 +1,10 @@
+{% extends 'tasktracker/base.html'%}
+{% load my_tags %}
+{% block content %}
+            <div class="card-body">
+              <p class="card-text"> Вы не можете удалить задачу, которую не создавали </p>
+              <div class="btn-group">
+                 <a class="btn btn-primary" href="{% url 'tasktracker:tasktracker_list'%}" role="button>">Вернуться к списку задач</a>
+              </div>
+            </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'tasktracker/base.html'%}
+{% load my_tags %}
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for task in object_list %}
+        <div class="col">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text"> Навание задачи: {{ task.name }} </p>
+              <p class="card-text"> Описание задачи: {{ task.description  }} </p>
+              <p class="card-text"> Начало задачи: {{ task.start_time }} </p>
+              <p class="card-text"> Срок исполнения: {{ task.end_time  }}</p>
+              <p class="card-text"> Стутус: {{ task.status  }} </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a class="btn btn-primary" href="{% url 'tasktracker:tasktracker_view' task.pk %}" role="button>">Посмотреть</a>
+                </div>
+                <div class="btn-group">
+                   <a class="btn btn-primary" href="{% url 'tasktracker:tasktracker_update' task.pk %}" role="button>">Редактировать</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

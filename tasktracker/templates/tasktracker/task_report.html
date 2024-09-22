@@ -1,0 +1,15 @@
+{% extends 'tasktracker/base.html'%}
+{% load my_tags %}
+{% block content %}
+        {% for task in object_list %}
+        <div class="row">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text"> Навание задачи: {{ task.name }} Исполнитель: {{ task.Executor }} </p>
+              <p class="card-text"> Описание задачи: {{ task.description  }} </p>
+              <p class="card-text"> Начало задачи: {{ task.start_time }}  Срок исполнения: {{ task.end_time  }}  Статус: {{ task.status  }} </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+{% endblock %}

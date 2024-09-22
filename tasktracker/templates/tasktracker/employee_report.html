@@ -1,0 +1,13 @@
+{% extends 'tasktracker/base.html'%}
+{% load my_tags %}
+{% block content %}
+        {% for report in my_report %}
+        <div class="row">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text"> Загруженность сотрудника : {{ report }} </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'tasktracker/base.html'%}
+{% load my_tags %}
+{% block content %}
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">Сервис управления заданиями</h1>
+        <p class="lead text-muted">Добро пожаловать в сервис управления заданиями.</p>
+        <p>
+        {% if user.is_authenticated %}
+         <p class="lead text-muted"> {{ user }} </p>
+         <a href="{% url 'tasktracker:tasktracker_create' %}" class="btn btn-primary my-2">Добавить задание</a>
+         <a href="{% url 'tasktracker:tasktracker_list' %}" class="btn btn-primary my-2">Мои задания</a>
+           {% else %}
+            <a href="{% url 'users:login' %}" class="btn btn-primary my-2">Вход</a>
+            <a href="{% url 'users:register' %}" class="btn btn-primary my-2">Регистрация</a>
+            {% endif %}
+        <div class="col-6">
+            <div class="card" style="width: 36rem;">
+                <div class="card-header"><h5>Статистика заданий</h5></div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Всего заданий - {{all_tasks}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

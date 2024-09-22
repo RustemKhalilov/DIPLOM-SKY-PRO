@@ -1,0 +1,23 @@
+{% extends 'tasktracker/base.html' %}
+{% block content %}
+<form method="post">
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <h3 class="card-header">Добавить задание</h3>
+                <div class="card--body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">
+                        {% if object %}
+                            Сохранить изменения
+                        {% else %}
+                            Добавить задание
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
