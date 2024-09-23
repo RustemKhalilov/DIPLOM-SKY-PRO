@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from users.models import User, Posts
+from users.models import User
 
 
 @admin.register(User)
@@ -11,8 +11,4 @@ class UserAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Posts)
-class PostsAdmin(admin.ModelAdmin):
-    list_filter = (
-        "Post",
-    )
+

@@ -3,6 +3,8 @@ from django.test import TestCase
 from django.conf import settings
 from tasktracker.models import Task
 from users.models import User, Posts
+from requests_toolbelt import MultipartEncoder
+import requests
 
 
 class TasktrackerTestClass(TestCase):
@@ -13,6 +15,7 @@ class TasktrackerTestClass(TestCase):
 
     def test_create_task(self):
         """Тестирование создания задания"""
+        re = requests
         test_user1 = User.objects.create_user(
             email="user5@list.ru",
             password="shungarillamolodoy13",
@@ -64,21 +67,35 @@ class TasktrackerTestClass(TestCase):
             Executor=test_user2,
             name="Разработка раздела",
             description="Разработать раздел ТХ для проекта Кумжинского месторождения",
-            start_time="2024-09-21",
             end_time="2024-10-01",
             related_task=None,
             status="Создана"
         )
-        url = reverse("tasktracker:tasktracker_create")
+
         # Проверка отображения задачи
         self.assertEqual(str(task1), "Разработка раздела Исполнитель: Семенова Екатерина Федоровна - Главный "
                                      "специалист  Статус: Создана")
 
-        login = self.client.get(reverse("users:login"),
-                                data={"email": 'user6@list.ru', "password": 'shungarillamolodoy15'})
+        login = self.client.post(reverse("users:login"),
+                                 data={"email": 'user5@list.ru', "password": 'shungarillamolodoy15'})
         self.assertEqual(login.status_code, 200)  # Проверка что пользователь залогинился
-        #Тут по идеи нужно еще протестировать создание заданий и их удаление через  self.client.get(reverse("tasktracker:tasktracker_create")
-        #Но при попытке отправить запрос такого вида
+        print(f"ЛОГИН - {login}")
+
+        multipart_data = {
+            "Executor": "Семенова Екатерина Федоровна - Главный специалист",
+            "name": "Разработка рабочей документации",
+            "description": "Разработать рабочую документацию для проекта Кумжинского месторождения",
+            "end_time": "2024-10-01",
+            "status": "Создана"
+        }
+
+        response = self.client.post(reverse("tasktracker:tasktracker_create"), data=multipart_data,
+                                    content_type='application/json')
+        print(f"РЕСПОНС -{response}")
+        data = response.json()
+        self.assertEqual(data.status_code, 201)
+
+        # Но при попытке отправить запрос такого вида
         # data = {
         #     'Creator': self.user1,
         #     'Executor': self.user2,

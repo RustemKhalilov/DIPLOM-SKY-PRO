@@ -111,10 +111,6 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
             return self.object
         else:
             redirect('tasktracker:error_permission')
-    #         raise AttributeError
-    # except AttributeError as e:
-    #     print("Ошибка прав доступа")
-    #     redirect("tasktracker/errorpermission.html")
 
 
 class TaskReportView(LoginRequiredMixin, ListView):

@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import ForeignKey
+from tasktracker.models import Posts
 
 from config.settings import NULLABLE
 
@@ -33,22 +34,6 @@ class UserManager(BaseUserManager):
             raise ValueError("У суперпользователя параметр <is_superuser> должен быть=True.")
 
         return self.add_user(email, password, **extra_fields)
-
-
-class Posts(models.Model):
-    Post = models.CharField(
-        max_length=50,
-        **NULLABLE,
-        verbose_name="Должность",
-        help_text="Должность"
-    )
-
-    class Meta:
-        verbose_name = "Должность"
-        verbose_name_plural = "Должности"
-
-    def __str__(self):
-        return f"{self.Post}"
 
 
 class User(AbstractUser):

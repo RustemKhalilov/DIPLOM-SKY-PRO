@@ -69,8 +69,17 @@ class Task(models.Model):
         return f"{self.name} Исполнитель: {self.Executor}  Статус: {self.status}"
 
 
-class Message(models.Model):
-    message = models.TextField(
-        'Вам пришло задание'
+class Posts(models.Model):
+    Post = models.CharField(
+        max_length=50,
+        **NULLABLE,
+        verbose_name="Должность",
+        help_text="Должность"
     )
 
+    class Meta:
+        verbose_name = "Должность"
+        verbose_name_plural = "Должности"
+
+    def __str__(self):
+        return f"{self.Post}"
