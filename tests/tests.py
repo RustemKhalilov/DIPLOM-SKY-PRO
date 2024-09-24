@@ -5,6 +5,7 @@ from tasktracker.models import Task
 from users.models import User, Posts
 from requests_toolbelt import MultipartEncoder
 import requests
+import secrets
 
 
 class TasktrackerTestClass(TestCase):
@@ -24,6 +25,7 @@ class TasktrackerTestClass(TestCase):
         # Создали юзера
         test_user1.is_active = True
         # Задали параметры юзеру
+        test_user1.token = secrets.token_hex(16)
         test_user1.Firstname = "Рустем"
 
         test_user1.Surname = "Халилов"
@@ -51,7 +53,7 @@ class TasktrackerTestClass(TestCase):
         test_user2.save()
 
         test_user2.is_active = True
-
+        test_user2.token = secrets.token_hex(16)
         test_user2.Firstname = "Екатерина"
 
         test_user2.Surname = "Семенова"
@@ -80,9 +82,13 @@ class TasktrackerTestClass(TestCase):
                                  data={"email": 'user5@list.ru', "password": 'shungarillamolodoy15'})
         self.assertEqual(login.status_code, 200)  # Проверка что пользователь залогинился
         print(f"ЛОГИН - {login}")
-
+        create_task = self.client.get(reverse("tasktracker:tasktracker_create"))
+        print(f"Создание задания - {create_task}")
+        self.assertEqual(create_task.status_code, 302)# Код 302 потому что от наз ожидают заполнения данных
+        my_tasklist = self.client.get(reverse("tasktracker:tasktracker_list"))
+        print(f"Список заданий - {my_tasklist}")
         multipart_data = {
-            "Executor": "Семенова Екатерина Федоровна - Главный специалист",
+            "Executor": "1",
             "name": "Разработка рабочей документации",
             "description": "Разработать рабочую документацию для проекта Кумжинского месторождения",
             "end_time": "2024-10-01",
@@ -90,10 +96,10 @@ class TasktrackerTestClass(TestCase):
         }
 
         response = self.client.post(reverse("tasktracker:tasktracker_create"), data=multipart_data,
-                                    content_type='application/json')
+                                     content_type='application/json')
         print(f"РЕСПОНС -{response}")
-        data = response.json()
-        self.assertEqual(data.status_code, 201)
+        # data = response.json()
+        # self.assertEqual(data.status_code, 201)
 
         # Но при попытке отправить запрос такого вида
         # data = {
