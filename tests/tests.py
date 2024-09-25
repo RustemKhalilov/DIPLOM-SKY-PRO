@@ -79,10 +79,10 @@ class TasktrackerTestClass(TestCase):
                                      "специалист  Статус: Создана")
 
         login = self.client.post(reverse("users:login"),
-                                 data={"email": 'user5@list.ru', "password": 'shungarillamolodoy15'})
+                                 data={"email": 'user5@list.ru', "password": 'shungarillamolodoy15', 'token': test_user2.token})
         self.assertEqual(login.status_code, 200)  # Проверка что пользователь залогинился
         print(f"ЛОГИН - {login}")
-        create_task = self.client.get(reverse("tasktracker:tasktracker_create"))
+        create_task = self.client.post(reverse("tasktracker:tasktracker_create"), )
         print(f"Создание задания - {create_task}")
         self.assertEqual(create_task.status_code, 302)# Код 302 потому что от наз ожидают заполнения данных
         my_tasklist = self.client.get(reverse("tasktracker:tasktracker_list"))
@@ -92,12 +92,12 @@ class TasktrackerTestClass(TestCase):
             "name": "Разработка рабочей документации",
             "description": "Разработать рабочую документацию для проекта Кумжинского месторождения",
             "end_time": "2024-10-01",
-            "status": "Создана"
+            "status": "Создана",
         }
-
+        #Создание задание через post
         response = self.client.post(reverse("tasktracker:tasktracker_create"), data=multipart_data,
                                      content_type='application/json')
-        print(f"РЕСПОНС -{response}")
+        print(f"Создание задания -{response}")
         # data = response.json()
         # self.assertEqual(data.status_code, 201)
 
