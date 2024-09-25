@@ -79,40 +79,26 @@ class TasktrackerTestClass(TestCase):
                                      "специалист  Статус: Создана")
 
         login = self.client.post(reverse("users:login"),
-                                 data={"email": 'user5@list.ru', "password": 'shungarillamolodoy15', 'token': test_user2.token})
+                                 data={'email': 'user5@list.ru', 'password': 'shungarillamolodoy15'},
+                                 content_type='application/json')  # 'token': test_user2.token}
+        print(f"ЛОГИН - {login.content}")
+        token = "14a7e5f3bfca5b53be439528c0570b79"
+        print(f"Токен - {token}")
         self.assertEqual(login.status_code, 200)  # Проверка что пользователь залогинился
-        print(f"ЛОГИН - {login}")
-        create_task = self.client.post(reverse("tasktracker:tasktracker_create"), )
-        print(f"Создание задания - {create_task}")
-        self.assertEqual(create_task.status_code, 302)# Код 302 потому что от наз ожидают заполнения данных
-        my_tasklist = self.client.get(reverse("tasktracker:tasktracker_list"))
-        print(f"Список заданий - {my_tasklist}")
         multipart_data = {
-            "Executor": "1",
+            "Executor": "6",
             "name": "Разработка рабочей документации",
             "description": "Разработать рабочую документацию для проекта Кумжинского месторождения",
-            "end_time": "2024-10-01",
+            "end_time": "27.09.2024",
             "status": "Создана",
         }
-        #Создание задание через post
-        response = self.client.post(reverse("tasktracker:tasktracker_create"), data=multipart_data,
-                                     content_type='application/json')
-        print(f"Создание задания -{response}")
-        # data = response.json()
-        # self.assertEqual(data.status_code, 201)
+        # Создание задание через post
+        path = reverse("tasktracker:tasktracker_create")
+        response = self.client.post(path, data=multipart_data, content_type="application/json")
+        print(f"Создание задания -{response.content}")
 
-        # Но при попытке отправить запрос такого вида
-        # data = {
-        #     'Creator': self.user1,
-        #     'Executor': self.user2,
-        #     'name': "Разработка рабочей документации",
-        #     'description': "Разработать рабочую документацию для проекта Кумжинского месторождения",
-        #     'start_time': "2024-09-21",
-        #     'end_time': "2024-10-01",
-        #     'related_task': self.task1,
-        #     'status': "Создана"
-        #
-        # }
-        # Выдает ошибку ValueError: Content-Type header is "text/html; charset=utf-8", not "application/json"
-        # Я долго копл и единственное что додумался это то что на строне клиента форма, которая уходит на сервер, если псомотреть html код формы, он допольно сложный
-        # и я его должен серверу и отправить обратно, как это правильно делается к сожалению нас не учили, а сам я не дошел.
+        self.assertEqual(response.status_code, 302)  # Код 302 потому что от наз ожидают заполнения данных
+        my_tasklist = self.client.get(reverse("tasktracker:tasktracker_list"))
+        print(f"Список заданий - {my_tasklist}")
+
+
