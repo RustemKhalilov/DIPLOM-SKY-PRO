@@ -4,8 +4,11 @@ from django.conf import settings
 from tasktracker.models import Task
 from users.models import User, Posts
 from requests_toolbelt import MultipartEncoder
+from django.middleware.csrf import CsrfViewMiddleware, get_token
 import requests
 import secrets
+import sys
+from django.test import Client
 
 
 class TasktrackerTestClass(TestCase):
@@ -78,27 +81,41 @@ class TasktrackerTestClass(TestCase):
         self.assertEqual(str(task1), "Разработка раздела Исполнитель: Семенова Екатерина Федоровна - Главный "
                                      "специалист  Статус: Создана")
 
-        login = self.client.post(reverse("users:login"),
-                                 data={'email': 'user5@list.ru', 'password': 'shungarillamolodoy15'},
+        login = self.client.post(reverse('users:login'),
+                                 data={'email': 'user6@list.ru', 'password': 'shungarillamolodoy15'},
                                  content_type='application/json')  # 'token': test_user2.token}
-        print(f"ЛОГИН - {login.content}")
-        token = "14a7e5f3bfca5b53be439528c0570b79"
-        print(f"Токен - {token}")
+
+
+        # token_json = login.json()
+        csrf_client = Client(enforce_csrf_checks=True)
+        URL = "http://127.0.0.1:8000/users/login/"
+        csrf_client.get(URL)
+        csrftoken = csrf_client.cookies['csrftoken']
+        # client = requests.session()
+        #
+        # # Retrieve the CSRF token first
+        # client.get(URL)  # sets cookie
+        print(f"ЛОГИН--{login.content.decode('utf-8')}")
+        print(f"ТОКЕН--{csrftoken}")
         self.assertEqual(login.status_code, 200)  # Проверка что пользователь залогинился
-        multipart_data = {
-            "Executor": "6",
+        data = {
+            "Executor": "3",
             "name": "Разработка рабочей документации",
             "description": "Разработать рабочую документацию для проекта Кумжинского месторождения",
             "end_time": "27.09.2024",
             "status": "Создана",
         }
-        # Создание задание через post
-        path = reverse("tasktracker:tasktracker_create")
-        response = self.client.post(path, data=multipart_data, content_type="application/json")
-        print(f"Создание задания -{response.content}")
-
-        self.assertEqual(response.status_code, 302)  # Код 302 потому что от наз ожидают заполнения данных
-        my_tasklist = self.client.get(reverse("tasktracker:tasktracker_list"))
-        print(f"Список заданий - {my_tasklist}")
-
+        login_data = dict(username='user6@list.ru', password="shungarillamolodoy15", csrfmiddlewaretoken=csrftoken.value, next='/')
+        r = csrf_client.post(URL, data=login_data, headers=dict(Referer=URL))
+        URL = "http://127.0.0.1:8000/list/"
+        my_tasklist = csrf_client.get(URL, params={"csrfmiddlewaretoken": csrftoken})
+        print(f"Список заданий - {my_tasklist.content.decode('utf-8')}")
+        self.assertEqual(my_tasklist.status_code, 200)  # Проверка списка заданий
+        URL = "http://127.0.0.1:8000/employeesreport/"
+        my_tasklist = csrf_client.get(URL, params={"csrfmiddlewaretoken": csrftoken})
+        print(f"Загрузка сотрудников - {my_tasklist.content.decode('utf-8')}")
+        self.assertEqual(my_tasklist.status_code, 200)  # Проверка загрузки сотрудников
+        URL = "http://127.0.0.1:8000/create/"
+        task_create = csrf_client.get(URL, params={"csrfmiddlewaretoken": csrftoken}, data=data)
+        self.assertEqual(task_create.status_code, 200)  # Проверка загрузки сотрудников
 

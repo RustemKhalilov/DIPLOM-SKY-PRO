@@ -18,9 +18,11 @@
                 <div class="btn-group">
                  <a class="btn btn-primary" href="{% url 'tasktracker:tasktracker_list'%}" role="button>">Назад</a>
                 </div>
+               {% if user == object.Creator %}
                 <div class="btn-group">
-                 <a class="btn btn-primary" href="{% url 'tasktracker:tasktracker_delete' object.id %}" role="button>">Удалить объект</a>
+                 <a class="btn btn-primary" href="{% url 'tasktracker:tasktracker_delete' object.id %}" role="button>">Удалить задание</a>
                 </div>
+               {% endif %}
               </div>
             </div>
         </div>
